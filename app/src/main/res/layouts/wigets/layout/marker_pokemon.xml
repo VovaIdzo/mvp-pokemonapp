@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="40dp"
+    android:layout_height="40dp">
+
+    <ImageView
+        android:id="@+id/marker_pokemon_location"
+        android:src="@drawable/ic_location"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+
+    <ImageView
+        android:id="@+id/marker_pokemon_icon"
+        android:padding="1dp"
+        android:background="@drawable/bg_pokemon"
+        android:layout_marginTop="3dp"
+        android:layout_gravity="center|top"
+        android:src="@drawable/pokemon20"
+        android:layout_width="22dp"
+        android:layout_height="22dp" />
+</FrameLayout>

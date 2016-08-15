@@ -1,0 +1,88 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'android-apt'
+
+android {
+    signingConfigs {
+        dev {
+            keyAlias 'trashh'
+            keyPassword 'trashh'
+            storeFile file('/home/vladimir/Android/Key store/trashh.jks')
+            storePassword 'trashh'
+        }
+
+        release {
+            keyAlias 'trashh'
+            keyPassword 'trashh'
+            storeFile file('/home/vladimir/Android/Key store/trashh.jks')
+            storePassword 'trashh'
+        }
+    }
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+    defaultConfig {
+        applicationId "com.idzodev.pokemonapp"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res/layouts/activities/',
+                           'src/main/res/layouts/fragments/',
+                           'src/main/res/layouts/toolbars/',
+                           'src/main/res/layouts/items/',
+                           'src/main/res/layouts/wigets/',
+                           'src/main/res/layouts/',
+                           'src/main/res/']
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.1.1'
+    /* Dagger */
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    compile 'com.google.dagger:dagger:2.0.2'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+    /* Parcel */
+    compile 'org.parceler:parceler-api:1.1.5'
+    apt "org.parceler:parceler:1.1.5"
+    /* RxJava */
+    compile 'io.reactivex:rxjava:1.1.5'
+    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'de.greenrobot:greendao:2.1.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    // Stream API
+    compile 'com.annimon:stream:1.0.9'
+    /* ELSE LIBS */
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'de.hdodenhof:circleimageview:2.0.+'
+    compile 'com.google.android.gms:play-services-maps:9.2.1'
+    compile 'com.google.android.gms:play-services-location:9.2.1'
+}

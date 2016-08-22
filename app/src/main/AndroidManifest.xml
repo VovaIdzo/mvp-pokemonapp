@@ -29,7 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.screens.map.MapActivity"
+        <activity
+            android:launchMode="singleInstance"
+            android:name=".ui.screens.map.MapActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.screens.GetMyLocationActivity"
             android:theme="@style/Theme.Transparent"

@@ -3,6 +3,7 @@ package com.idzodev.pokemonapp.ui.screens.map;
 import android.location.Location;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.idzodev.pokemonapp.core.android.App;
 import com.idzodev.pokemonapp.core.mvp.BasePresenter;
@@ -19,11 +20,14 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
     private UserUseCase userUseCase;
     private final int type;
+    private boolean isCameraDisable;
+    private LatLng lastKnownLocation;
 
     @Inject
     public MapPresenterImpl(int type, App app, UserUseCase userUseCase) {
         this.userUseCase = userUseCase;
         this.type = type;
+        this.isCameraDisable = false;
     }
 
     @Override
@@ -40,9 +44,33 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
                 getView().hideProgress();
                 getView().removeOldMapData();
+                getView().showMyPosition(lat, lon);
                 getView().showMapData(item);
+                if (isCameraDisable || lastKnownLocation == null){
+                    getView().moveCamera(lat, lon);
+                }
+
+                lastKnownLocation = new LatLng(lat, lon);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                getView().showMyPosition(lastKnownLocation.latitude, lastKnownLocation.longitude);
             }
         }));
+    }
+
+    @Override
+    public void onDisableCameraMovement(boolean disable) {
+        isCameraDisable = disable;
+        if (isCameraDisable){
+            getView().cameraMovementDisable();
+            if (lastKnownLocation != null)
+                getView().moveCamera(lastKnownLocation.latitude, lastKnownLocation.longitude);
+        } else {
+            getView().cameraMovementEnable();
+        }
     }
 
     @Override
@@ -54,8 +82,6 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     public void onLocationChange(Location location) {
         if (location == null)
             return;
-
-        getView().showMyPosition(location.getLatitude(), location.getLongitude());
         updateData(location.getLatitude(), location.getLongitude());
     }
 

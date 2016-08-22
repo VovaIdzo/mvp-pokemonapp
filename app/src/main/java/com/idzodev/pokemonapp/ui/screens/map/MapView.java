@@ -12,4 +12,8 @@ public interface MapView {
     void showMyPosition(double lat, double lan);
     void showMapData(MapDataDvo mapDataDvo);
     void removeOldMapData();
+
+    void cameraMovementDisable();
+    void cameraMovementEnable();
+    void moveCamera(double lat, double lon);
 }

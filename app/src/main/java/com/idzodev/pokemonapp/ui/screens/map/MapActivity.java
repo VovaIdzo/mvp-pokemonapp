@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,6 +43,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 
 /**
  * Created by vladimir on 12.08.16.
@@ -55,6 +58,8 @@ public class MapActivity extends BaseActivity implements MapView, OnMapReadyCall
     protected FusedLocationProvider fusedLocationProvider;
     @Inject
     protected MapPresenter mapPresenter;
+    @BindView(R.id.map_activity_settings)
+    protected CheckBox checkBox;
 
     private GoogleMap googleMap;
     private Marker myLastLocationMarker;
@@ -102,7 +107,6 @@ public class MapActivity extends BaseActivity implements MapView, OnMapReadyCall
     @Override
     public void showMyPosition(double lat, double lan) {
         if (googleMap == null) return;
-        final boolean moveCamera = myLastLocationMarker == null;
 
         if (myLastLocationMarker != null){
             myLastLocationMarker.setPosition(new LatLng(lat, lan));
@@ -120,10 +124,6 @@ public class MapActivity extends BaseActivity implements MapView, OnMapReadyCall
                     .strokeColor(Color.BLACK)
                     .fillColor(Color.parseColor("#40000000")));
         }
-
-        if (moveCamera){
-            MapUtils.cameraGoTo(googleMap, new LatLng(lat, lan), 15);
-        }
     }
 
     @Override
@@ -139,8 +139,26 @@ public class MapActivity extends BaseActivity implements MapView, OnMapReadyCall
     @Override
     public void removeOldMapData() {
         for (Marker marker : entities){
-            entities.remove(marker);
+            marker.remove();
         }
+        entities.clear();
+    }
+
+    @Override
+    public void cameraMovementDisable() {
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomGesturesEnabled(false);
+    }
+
+    @Override
+    public void cameraMovementEnable() {
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        googleMap.getUiSettings().setZoomGesturesEnabled(true);
+    }
+
+    @Override
+    public void moveCamera(double lat, double lon) {
+        MapUtils.cameraGoTo(googleMap, new LatLng(lat, lon), 15);
     }
 
     private void setupDagger(){
@@ -171,5 +189,10 @@ public class MapActivity extends BaseActivity implements MapView, OnMapReadyCall
         mapPresenter.attachView(this);
         mapPresenter.onLocationChange(fusedLocationProvider.getLastLocation(this));
         fusedLocationProvider.register(mapPresenter);
+    }
+
+    @OnCheckedChanged(R.id.map_activity_settings)
+    public void onCameraCheckListener(){
+        mapPresenter.onDisableCameraMovement(checkBox.isChecked());
     }
 }

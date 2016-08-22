@@ -10,5 +10,6 @@ import com.idzodev.pokemonapp.services.location.FusedLocationProvider;
  */
 public interface MapPresenter extends Presenter<MapView>, FusedLocationProvider.OnLocationChangeListener{
     void updateData(double lat, double lon);
+    void onDisableCameraMovement(boolean disable);
     void onMarkerClicked(Marker markerOptions);
 }
